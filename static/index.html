@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        html,
+        body {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        #map {
+            /* configure the size of the map */
+            width: 100%;
+            height: 100%;
+            /* filter: blur(10px); */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        // initialize SocketIO
+        const socket = io();
+        // initialize Leaflet
+        var map = L.map('map', { zoomControl: false }).setView({ lat: 6.8350515, lon: 80.005318 }, 15);
+
+        // add the OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            reuseTiles: true,
+            unloadInvisibleTiles: true,
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+        }).addTo(map);
+        map.touchZoom.disable();
+        map.doubleClickZoom.disable();
+        map.scrollWheelZoom.disable();
+        map.boxZoom.disable();
+        map.keyboard.disable();
+        // show the scale bar on the lower left corner
+        L.control.scale().addTo(map);
+
+        // add a marker in the given location
+        var lat = 6.8211
+        var lng = 80.0409;
+        var marker = L.marker([lat, lng]).addTo(map);
+        socket.on('locationUpdate', (data) => {
+            console.log(data)
+            // console.log(data[0]);
+            marker.setLatLng([data[1], data[0]]).update();
+        });
+    </script>
+</body>
+
+</html>

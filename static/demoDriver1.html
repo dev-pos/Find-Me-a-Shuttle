@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="routeCords.js"></script>
+</head>
+
+<body>
+    <div id="map"></div>
+    <script>
+        // initialize SocketIO
+        const socket = io();
+		  x = 0;
+setInterval(function(){
+    if(x <= coordinates.length){
+      socket.emit('newLocation', {driverId: 1, latlon:coordinates[++x]});
+      console.log("New Location Sent")
+    }
+  }, 500);
+    </script>
+</body>
+
+</html>
