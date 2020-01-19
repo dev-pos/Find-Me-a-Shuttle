@@ -43,6 +43,19 @@ module.exports = {
                 return res.send(err);
             });
     },
+    getByLoc: function (req, res, next) {
+        return db.Trip.findAll({
+            where: {
+                startLoc: req.params.loc1,
+                endLoc: req.params.loc2
+            }
+        })
+            .then((trips) => res.send(trips))
+            .catch((err) => {
+                console.log('There was an error querying trips', JSON.stringify(err));
+                return res.send(err);
+            });
+    },
     create: function (req, res, next) {
         const { startDateTime, startLoc, endLoc } = req.body;
         return db.Trip.create({ startDateTime, startLoc, endLoc })

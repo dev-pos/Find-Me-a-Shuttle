@@ -1,5 +1,5 @@
 const db = require("../models");
-const env = require('dotenv');
+require('dotenv').config();
 const Passenger = db.Passenger;
 
 const Op = db.Sequelize.Op;
@@ -46,7 +46,7 @@ exports.signin = (req, res) => {
                 });
             }
 
-            var token = jwt.sign({ id: passenger.id }, env.secret, {
+            var token = jwt.sign({ id: passenger.id }, process.env.secret, {
                 expiresIn: 86400 // 24 hours
             });
             res.status(200).send({
@@ -57,6 +57,6 @@ exports.signin = (req, res) => {
             });
         })
         .catch(err => {
-            res.status(500).send({ message: err.message });
+            res.status(200).send({ message: err.message });
         });
 };

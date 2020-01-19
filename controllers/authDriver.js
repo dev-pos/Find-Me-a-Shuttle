@@ -1,5 +1,5 @@
 const db = require("../models");
-const env = require('dotenv');
+require('dotenv').config();
 const Driver = db.Driver;
 
 const Op = db.Sequelize.Op;
@@ -24,6 +24,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+    console.log(req.body);
     Driver.findOne({
         where: {
             email: req.body.email
@@ -46,7 +47,7 @@ exports.signin = (req, res) => {
                 });
             }
 
-            var token = jwt.sign({ id: driver.id }, env.secret, {
+            var token = jwt.sign({ id: driver.id }, process.env.secret, {
                 expiresIn: 86400 // 24 hours
             });
             res.status(200).send({

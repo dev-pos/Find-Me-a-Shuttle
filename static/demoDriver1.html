@@ -1,26 +1,31 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script src="routeCords.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="map"></div>
     <script>
-        // initialize SocketIO
-        const socket = io();
-		  x = 0;
-setInterval(function(){
-    if(x <= coordinates.length){
-      socket.emit('newLocation', {driverId: 1, latlon:coordinates[++x]});
-      console.log("New Location Sent")
-    }
-  }, 500);
+      // initialize SocketIO
+      var tok =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNTc5MzgwNTE5LCJleHAiOjE1Nzk0NjY5MTl9.odyRS_Z_dm-TxpygI5qxAS2exUxG5IFUVdqFRV_0Zxs";
+      const socket = io("http://localhost:3000", {
+        query: "accessToken=" + tok
+      });
+      x = 0;
+      setInterval(function() {
+        if (x <= coordinates.length) {
+          socket.emit("newLocation", { driverId: 1, latlon: coordinates[++x] });
+          console.log("New Location Sent");
+        }
+      }, 500);
     </script>
-</body>
-
+  </body>
 </html>
