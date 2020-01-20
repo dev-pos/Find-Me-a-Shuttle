@@ -19,10 +19,19 @@ module.exports = {
       password: '$2b$10$5SEZwjPvmspPKDE05b7dYuluh1GTBJtJMrw/hOffCjUN8L95sttE2',
       createdAt: new Date().toString(),
       updatedAt: new Date().toString()
-    }, {
+    }, 
+    {
       surName: 'Johns',
       initials: 'TLT',
       email: 'jttlne6w@gmail.com',
+      password: '$2b$10$5SEZwjPvmspPKDE05b7dYuluh1GTBJtJMrw/hOffCjUN8L95sttE2',
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString()
+    }, 
+    {
+      surName: 'Demo User',
+      initials: 'ABC',
+      email: 'demo@t.com',
       password: '$2b$10$5SEZwjPvmspPKDE05b7dYuluh1GTBJtJMrw/hOffCjUN8L95sttE2',
       createdAt: new Date().toString(),
       updatedAt: new Date().toString()

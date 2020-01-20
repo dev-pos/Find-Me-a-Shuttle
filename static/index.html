@@ -42,9 +42,6 @@
         transition: ease-in all 0.3s;
       }
 
-      .removeFilter {
-        filter: none !important;
-      }
     </style>
   </head>
 
@@ -76,8 +73,8 @@
               id="email"
               type="text"
               placeholder="johndoe@mail.com"
-              value="doecj2t3@gmail.com"
-            />
+              value="demo@t.com"
+            required/>
           </div>
           <div class="mb-4">
             <label
@@ -87,13 +84,12 @@
               Password
             </label>
             <input
-              class="shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-md"
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-md"
               id="password"
               type="password"
               placeholder="*****************"
               value="1234"
-            />
-            <p class="text-red-500 text-xs italic">Please choose a password.</p>
+            required/>
           </div>
           <div class="mb-2">
             <button
@@ -120,9 +116,19 @@
 
     <div
       id="schedule"
-      class="max-w-md rounded overflow-hidden shadow-lg right-0 absolute bg-white w-screen"
+      class="max-w-md rounded overflow-hidden shadow-lg right-0 absolute bg-white w-screen hide"
     >
-      <div class="px-4 py-4">
+    <div class="px-4 py-4 mt-4 mx-4 bg-gray-100">
+      <div class="inline-block">
+        <p class="text-sm ">Logged in as</p>
+        <p id="userName" class="text-lg font-light">
+        </p>
+      </div>
+      <div class="inline-block float-right">
+        <div onclick="logout()" class="inline-block"><img class="w-6" src="assets/img/sign-out.png"></div>
+      </div>
+    </div>
+      <div class="px-4 py-4 ">
         <div class="bg-gray-100 pt-1">
           <h1 class="text-center text-2xl font-bold mb-0">
             Shuttle Schedule
@@ -134,11 +140,13 @@
         </div>
         <form id="whereTo" class="mt-4 mb-4 text-center">
           <div class="inline-block relative w-40">
-            <select id="from"
+            <select
+              id="from"
+              onchange="generateSchedule()"
               class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
             >
-              <option>NSBM</option>
-              <option>Kottawa</option>
+              <option value="1">NSBM</option>
+              <option value="2">Kottawa</option>
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -154,13 +162,20 @@
               </svg>
             </div>
           </div>
-          <p class="inline-block px-4">to</p>
+          <p
+            onclick="changeSelect();"
+            class="inline-block px-2 mx-1 shadow py-2 cursor-pointer hover:shadow-md"
+          >
+            &lt; to &gt;
+          </p>
           <div class="inline-block relative w-40">
-            <select id="to"
+            <select
+              id="to"
+              onchange="generateSchedule()"
               class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
             >
-              <option>Kottawa</option>
-              <option>NSBM</option>
+              <option value="2">Kottawa</option>
+              <option value="1">NSBM</option>
             </select>
             <div
               class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"
@@ -178,24 +193,12 @@
           </div>
         </form>
         <hr />
-        <div id="timeContainer" class="mt-4">
-          
-        </div>
+        <div id="timeContainer" class="mt-4"></div>
       </div>
     </div>
 
     <div id="map"></div>
     <script>
-      if (localStorage.getItem("accessToken")) {
-        showSchedule();
-      } else {
-        showSignin();
-      }
-      var busList;
-      getBusList();
-      generateSchedule();
-
-
       // initialize Leaflet Map
       var map = L.map("map", { zoomControl: false }).setView(
         { lat: 6.8350515, lon: 80.005318 },
@@ -217,6 +220,55 @@
       map.keyboard.disable();
       // show the scale bar on the lower left corner
       L.control.scale().addTo(map);
+      if (localStorage.getItem("accessToken")) {
+        showSchedule();
+        // initialize SocketIO
+        const socket = io("http://localhost:3000", {
+          query: "accessToken=" + localStorage.getItem("accessToken")
+        });
+        marker1 = L.marker([0, 0]).addTo(map);
+        marker2 = L.marker([0, 0]).addTo(map);
+        marker3 = L.marker([0, 0]).addTo(map);
+        marker4 = L.marker([0, 0]).addTo(map);
+        marker5 = L.marker([0, 0]).addTo(map);
+        socket.on("locationUpdate1", data1 => {
+          // console.log(data)
+            var lat1 = data1[1];
+            var lng1 = data1[0];
+            marker1.setLatLng([lat1, lng1]).update();
+        });
+        socket.on("locationUpdate2", data2 => {
+          // console.log(data)
+            var lat2 = data2[1];
+            var lng2 = data2[0];
+            marker2.setLatLng([lat2, lng2]).update();
+        });
+        socket.on("locationUpdate3", data3 => {
+          // console.log(data)
+            var lat3 = data3[1];
+            var lng3 = data3[0];
+            marker3.setLatLng([lat3, lng3]).update();
+        });
+        socket.on("locationUpdate4", data4 => {
+          // console.log(data)
+            var lat4 = data4[1];
+            var lng4 = data4[0];
+            marker4.setLatLng([lat4, lng4]).update();
+        });
+        socket.on("locationUpdate5", data5 => {
+          // console.log(data)
+            var lat5 = data5[1];
+            var lng5 = data5[0];
+            marker5.setLatLng([lat5, lng5]).update();
+        });
+
+
+      } else {
+        showSignin();
+      }
+      var busList;
+
+      //add a zero bfore number if it is a single digit,
       Number.prototype.pad = function(size) {
         var s = String(this);
         while (s.length < (size || 2)) {
@@ -237,6 +289,8 @@
         var mapDiv = document.getElementById("map");
         scheduleModal.style.opacity = 1;
         mapDiv.style.filter = "none";
+        getBusList();
+        generateSchedule();
       }
 
       function signin() {
@@ -254,12 +308,13 @@
           "application/x-www-form-urlencoded"
         );
         request.onload = function() {
-          // Begin accessing JSON data here
+          // Begin accessing JSON data
           var data = JSON.parse(this.response);
 
           if (request.status >= 200 && request.status < 400) {
             console.log(data.accessToken);
             localStorage.setItem("id", data.id);
+            localStorage.setItem("initials", data.initials);
             localStorage.setItem("surName", data.surName);
             localStorage.setItem("email", data.email);
             localStorage.setItem("accessToken", data.accessToken);
@@ -268,13 +323,41 @@
           }
         };
         request.send("email=" + email + "&password=" + password);
+        location.reload();
       }
 
       function getBusList() {
         var request = new XMLHttpRequest();
+        request.open("GET", "http://localhost:3000/api/busses/", true);
+        request.setRequestHeader(
+          "Content-type",
+          "application/x-www-form-urlencoded"
+        );
+        request.onload = function() {
+          // Begin accessing JSON data
+          var data = JSON.parse(this.response);
+
+          if (request.status >= 200 && request.status < 400) {
+            busList = data;
+          } else {
+            console.log("error");
+          }
+        };
+        request.send();
+      }
+
+      function generateSchedule() {
+        document.getElementById("userName").innerHTML = localStorage.getItem("initials")+" "+localStorage.getItem("surName");
+
+
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var loc1 = document.getElementById("from").value;
+        var loc2 = document.getElementById("to").value;
+        var request = new XMLHttpRequest();
         request.open(
           "GET",
-          "http://localhost:3000/api/busses/",
+          "http://localhost:3000/api/trips/getByLoc/" + loc1 + "/" + loc2,
           true
         );
         request.setRequestHeader(
@@ -286,31 +369,8 @@
           var data = JSON.parse(this.response);
 
           if (request.status >= 200 && request.status < 400) {
-              busList = data;
-          } else {
-            console.log("error");
-          }
-        };
-        request.send();
-      }
-
-      function generateSchedule() {
-        email = document.getElementById("email").value;
-        password = document.getElementById("password").value;
-
-        var request = new XMLHttpRequest();
-        request.open("GET", "http://localhost:3000/api/trips", true);
-        request.setRequestHeader(
-          "Content-type",
-          "application/x-www-form-urlencoded"
-        );
-        request.onload = function() {
-          // Begin accessing JSON data here
-          var data = JSON.parse(this.response);
-
-          if (request.status >= 200 && request.status < 400) {
             var timeContainer = document.getElementById("timeContainer");
-            var outHtml = '';
+            var outHtml = "";
             data.forEach(element => {
               // console.log(element.id);
               // console.log(element.startDateTime);
@@ -335,14 +395,16 @@
                 "</span></p>" +
                 "</div>" +
                 '<div class="inline-block float-right">' +
-                '<p class="text-xl font-light mt-1">'+busList[element.busId-1].plate+'</p>' +
+                '<p class="text-xl font-light mt-1">' +
+                busList[element.busId - 1].plate +
+                "</p>" +
                 '<div class="mt-3 float-right">' +
                 "<ul>" +
                 '<li class="inline-block mr-2"><img class="w-4" src="assets/img/bell-r.png"></li>' +
                 '<li class="inline-block"><img class="w-4" src="assets/img/share.png"></li>' +
                 "</ul></div></div></div>";
             });
-            timeContainer.innerHTML += outHtml;
+            timeContainer.innerHTML = outHtml;
           } else {
             console.log("error");
           }
@@ -351,31 +413,25 @@
       }
       function getMins(m, h) {
         return h
-          ? m + " minute" + ((m == 1)
-            ? ""
-            : "s")
-          : h + " hour" + ((h == 1)
-          ? ""
-          : "s") + " and " + m + " minute" + ((m == 1)
-          ? ""
-          : "s");
+          ? m + " minute" + (m == 1 ? "" : "s")
+          : h +
+              " hour" +
+              (h == 1 ? "" : "s") +
+              " and " +
+              m +
+              " minute" +
+              (m == 1 ? "" : "s");
       }
-
-      function main() {
-        // initialize SocketIO
-        const socket = io("http://localhost:3000", {
-          query: "accessToken=" + localStorage.getItem("accessToken")
-        });
-
-        // add a marker in the given location
-        var lat = 6.8211;
-        var lng = 80.0409;
-        var marker = L.marker([lat, lng]).addTo(map);
-        socket.on("locationUpdate", data => {
-          // console.log(data);
-          // console.log(data[0]);
-          marker.setLatLng([data[1], data[0]]).update();
-        });
+      function changeSelect() {
+        select1 = document.getElementById("from").value;
+        select2 = document.getElementById("to").value;
+        document.getElementById("to").value = select1;
+        document.getElementById("from").value = select2;
+        generateSchedule();
+      }
+      function logout(){
+        localStorage.clear();
+        location.reload();
       }
     </script>
   </body>

@@ -24,7 +24,19 @@ module.exports = {
       photoUrl: 'https://via.placeholder.com/250',
       createdAt: new Date().toString(),
       updatedAt: new Date().toString()
-    }, 
+    }, { 
+      plate: 'LT-1243',
+      seatsCount: 56,
+      photoUrl: 'https://via.placeholder.com/250',
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString()
+    },  {
+      plate: 'KR-2001',
+      seatsCount: 56,
+      photoUrl: 'https://via.placeholder.com/250',
+      createdAt: new Date().toString(),
+      updatedAt: new Date().toString()
+    },  
   ], {});
   },
 

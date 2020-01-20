@@ -52,6 +52,7 @@ exports.signin = (req, res) => {
             });
             res.status(200).send({
                 id: driver.id,
+                initials:driver.initials,
                 surName: driver.surName,
                 email: driver.email,
                 accessToken: token

@@ -22,12 +22,12 @@ app.use('/api/busses', require('./routes/busses'));
 //event fired every time before a new client connects
 //so we use it to authenticate users before they join to socket server
 io.use((socket, next) => {
-   console.log(socket.request._query);
+  //  console.log(socket.request._query);
     try {
       jwt.verify(socket.request._query.accessToken, process.env.secret);
       next()
   } catch(err) {
-    console.log('err')
+    // console.log('err')
     return next(new Error('Authentication error'));
   }
   // return next();
@@ -35,11 +35,26 @@ io.use((socket, next) => {
 
 io.on('connection', (socket) => {
   socket.on('newLocation', (data) => {
-    io.emit('locationUpdate', data.latlon);
-    console.log(data.driverId);
+    switch (data.driverId) {
+      case 1:
+        io.emit('locationUpdate1', data.latlon);
+        break;
+      case 2:
+        io.emit('locationUpdate2', data.latlon);
+        break;
+      case 3:
+        io.emit('locationUpdate3', data.latlon);
+        break;
+      case 4:
+        io.emit('locationUpdate4', data.latlon);
+        break;
+      case 5:
+        io.emit('locationUpdate5', data.latlon);
+        break;
+    }
   });
 });
-console.log(process.env.secret)
+// console.log(process.env.secret)
 
 http.listen(3000, () => {
   console.log('Server is up on port 3000');

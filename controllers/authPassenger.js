@@ -51,6 +51,7 @@ exports.signin = (req, res) => {
             });
             res.status(200).send({
                 id: passenger.id,
+                initials: passenger.initials,
                 surName: passenger.surName,
                 email: passenger.email,
                 accessToken: token

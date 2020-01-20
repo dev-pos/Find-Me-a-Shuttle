@@ -19,13 +19,13 @@
       const socket = io("http://localhost:3000", {
         query: "accessToken=" + tok
       });
-      x = 0;
+      x = 608;
       setInterval(function() {
-        if (x <= coordinates.length) {
-          socket.emit("newLocation", { driverId: 1, latlon: coordinates[++x] });
+        if (x >0) {
+          socket.emit("newLocation", { driverId: 2, latlon: coordinates[--x] });
           console.log(x);
-        }else if(x >=0){
-          socket.emit("newLocation", { driverId: 1, latlon: coordinates[--x] });
+        }else if(x < coordinates.length){
+          socket.emit("newLocation", { driverId: 2, latlon: coordinates[++x] });
           console.log("New Location Sent");
         }
       }, 1000);
